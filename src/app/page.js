@@ -4,8 +4,18 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FiArrowRight, FiCode, FiBook, FiAward, FiGithub, FiLinkedin } from 'react-icons/fi'
+import { getAllTutorials } from './utils/tutorialData'
+import { getFeaturedPosts, getLatestPosts } from './utils/blogData'
 
 export default function Home() {
+  // Get tutorials data
+  const tutorials = getAllTutorials();
+  const featuredTutorial = tutorials[0];
+
+  // Get blog posts data
+  const featuredPost = getFeaturedPosts(1)[0];
+  const latestPosts = getLatestPosts(3);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -101,71 +111,78 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Featured Tutorial Card */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg"
-            >
-              <div className="h-48 bg-green-100 dark:bg-green-900 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <FiCode className="text-6xl text-green-500" />
+            {featuredTutorial && (
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg"
+              >
+                <div className="h-48 bg-green-100 dark:bg-green-900 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <FiCode className="text-6xl text-green-500" />
+                  </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs">
-                    DSA
-                  </span>
-                  <span className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-xs">
-                    C++
-                  </span>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs">
+                      {featuredTutorial.category}
+                    </span>
+                    <span className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-xs">
+                      {featuredTutorial.difficulty}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{featuredTutorial.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    {featuredTutorial.excerpt}
+                  </p>
+                  <Link 
+                    href={`/tutorials/${featuredTutorial.slug}`}
+                    className="inline-flex items-center text-green-500 font-medium"
+                  >
+                    Start Learning <FiArrowRight className="ml-2" />
+                  </Link>
                 </div>
-                <h3 className="text-xl font-bold mb-3">Data Structures & Algorithms in C++</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  A comprehensive guide to mastering data structures and algorithms using C++.
-                </p>
-                <Link 
-                  href="/tutorials/dsa-cpp-course-overview" 
-                  className="inline-flex items-center text-green-500 font-medium"
-                >
-                  Start Learning <FiArrowRight className="ml-2" />
-                </Link>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
             
             {/* Featured Blog Post Card */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg"
-            >
-              <div className="h-48 bg-blue-100 dark:bg-blue-900 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <FiBook className="text-6xl text-blue-500" />
+            {featuredPost && (
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg"
+              >
+                <div className="h-48 bg-blue-100 dark:bg-blue-900 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <FiBook className="text-6xl text-blue-500" />
+                  </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-3 py-1 rounded-full text-xs">
-                    AI
-                  </span>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`bg-${getCategoryColor(featuredPost.category)}-100 dark:bg-${getCategoryColor(featuredPost.category)}-900 
+                      text-${getCategoryColor(featuredPost.category)}-800 dark:text-${getCategoryColor(featuredPost.category)}-200 
+                      px-3 py-1 rounded-full text-xs`}
+                    >
+                      {featuredPost.category}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{featuredPost.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    {featuredPost.excerpt}
+                  </p>
+                  <Link 
+                    href={`/blog/${featuredPost.slug}`}
+                    className="inline-flex items-center text-green-500 font-medium"
+                  >
+                    Read Article <FiArrowRight className="ml-2" />
+                  </Link>
                 </div>
-                <h3 className="text-xl font-bold mb-3">Integrating AI Into Modern Web Applications</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Learn how to leverage AI capabilities in your next web project without complex infrastructure.
-                </p>
-                <Link 
-                  href="/blog/integrating-ai-into-web-applications" 
-                  className="inline-flex items-center text-green-500 font-medium"
-                >
-                  Read Article <FiArrowRight className="ml-2" />
-                </Link>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
             
             {/* Start Learning Card */}
             <motion.div 
@@ -217,86 +234,36 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Blog Post 1 */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="h-48 bg-red-100 dark:bg-red-900 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-red-500 font-bold">Security</div>
+            {latestPosts.map((post, index) => (
+              <motion.div 
+                key={post.slug}
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className={`h-48 bg-${getCategoryColor(post.category)}-100 dark:bg-${getCategoryColor(post.category)}-900 relative`}>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className={`text-${getCategoryColor(post.category)}-500 font-bold`}>
+                      {post.category.charAt(0).toUpperCase() + post.category.slice(1)}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">Cybersecurity Best Practices for 2025</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  A comprehensive guide to protecting your digital assets with modern security techniques.
-                </p>
-                <Link 
-                  href="/blog/cybersecurity-best-practices-2025" 
-                  className="inline-flex items-center text-green-500 font-medium"
-                >
-                  Read More <FiArrowRight className="ml-2" />
-                </Link>
-              </div>
-            </motion.div>
-            
-            {/* Blog Post 2 */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="h-48 bg-blue-100 dark:bg-blue-900 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-blue-500 font-bold">Web</div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-3">{post.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                  <Link 
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center text-green-500 font-medium"
+                  >
+                    Read More <FiArrowRight className="ml-2" />
+                  </Link>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">Exploring Next.js 15: Key Features for Developers</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  A deep dive into the most impactful features in the latest Next.js release.
-                </p>
-                <Link 
-                  href="/blog/nextjs-15-features" 
-                  className="inline-flex items-center text-green-500 font-medium"
-                >
-                  Read More <FiArrowRight className="ml-2" />
-                </Link>
-              </div>
-            </motion.div>
-            
-            {/* Blog Post 3 */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="h-48 bg-purple-100 dark:bg-purple-900 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-purple-500 font-bold">Algorithms</div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">Optimizing Algorithm Efficiency with Advanced Data Structures</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  Practical techniques to improve performance in your applications using the right data structures.
-                </p>
-                <Link 
-                  href="/blog/data-structures-algorithm-efficiency" 
-                  className="inline-flex items-center text-green-500 font-medium"
-                >
-                  Read More <FiArrowRight className="ml-2" />
-                </Link>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -340,4 +307,15 @@ export default function Home() {
       </section>
     </div>
   )
+}
+
+// Helper function to get color based on category
+function getCategoryColor(category) {
+  const colorMap = {
+    security: 'red',
+    ai: 'yellow',
+    web: 'blue',
+    algorithms: 'purple'
+  };
+  return colorMap[category] || 'gray';
 }
