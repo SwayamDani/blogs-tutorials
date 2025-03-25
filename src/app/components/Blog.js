@@ -1,14 +1,12 @@
 'use client'
-import React from 'react'
-import {useState} from 'react'
-import Blogs from '../components/Blog'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getAllBlogPosts, getFeaturedPosts, getBlogPostsByCategory } from '../utils/blogData'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FiCalendar, FiClock, FiArrowRight } from 'react-icons/fi'
 
-export default function BlogPage() {
+export default function Blog() {
   const [filter, setFilter] = useState('all');
   
   // Get all blog posts

@@ -2,22 +2,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import TutorialCard from './TutorialCard';
-import courseOverview from '../tutorials/dsa/course-overview';
-import linkedListsOverview from '../tutorials/dsa/linked-lists/linked-lists-overview';
-import singlyLinkedList from '../tutorials/dsa/linked-lists/singly-linked-list';
-import doublyLinkedList from '../tutorials/dsa/linked-lists/doubly-linked-list';
-import circularLinkedList from '../tutorials/dsa/linked-lists/circular-linked-list';
+import dsaCourse from '../tutorials/dsa/course-overview';
 
 export default function Tutorials() {
   const [filter, setFilter] = useState('all');
   
   // Define tutorials array directly
   const tutorials = [
-    courseOverview,
-    linkedListsOverview,
-    singlyLinkedList,
-    doublyLinkedList,
-    circularLinkedList
+    dsaCourse,
   ];
   
   const filteredTutorials = filter === 'all' 

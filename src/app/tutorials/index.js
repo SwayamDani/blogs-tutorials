@@ -2,7 +2,7 @@
 // This file exports all tutorials from their individual modules
 
 // Course overview
-import courseOverview from './dsa/course-overview';
+import dsaCourse from './dsa/course-overview';
 
 // Linked Lists module
 import linkedListsOverview from './dsa/linked-lists/linked-lists-overview';
@@ -17,7 +17,7 @@ import binarySearchTree from './dsa/trees/binary-search-tree';
 
 // Export all tutorials as an array
 export const allTutorials = [
-  courseOverview,
+  dsaCourse,
   linkedListsOverview,
   singlyLinkedList,
   doublyLinkedList,
@@ -29,7 +29,7 @@ export const allTutorials = [
 
 // Export individual tutorials for direct access
 export {
-  courseOverview,
+  dsaCourse,
   linkedListsOverview,
   singlyLinkedList,
   doublyLinkedList, 

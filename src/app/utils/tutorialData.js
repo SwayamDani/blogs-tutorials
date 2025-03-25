@@ -2,7 +2,9 @@
 import { allTutorials } from '../tutorials';
 
 export function getAllTutorials() {
-  // Make sure we handle potential errors in the import
+  
+  console.log(allTutorials);
+
   if (!Array.isArray(allTutorials)) {
     console.error("allTutorials is not an array:", allTutorials);
     return [];
