@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import './globals.css'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 export default function RootLayout({ children }) {
   const [darkMode, setDarkMode] = useState(true)
@@ -29,12 +30,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={darkMode ? 'dark' : ''}>
       <head>
-        <title>Swayam Dani | Portfolio</title>
-        <meta name="description" content="Portfolio of Swayam Dani - Computer Science student specializing in AI, web development, and cybersecurity" />
+        <title>ByteHub by Swayam Dani | Tutorials & Articles</title>
+        <meta name="description" content="ByteHub by Swayam Dani - Tutorials and articles on programming, data structures, algorithms, web development, and more." />
       </head>
-      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition-colors duration-300">
-        <Navbar darkMode={darkMode} />
-        <main>{children}</main>
+      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition-colors duration-300 flex flex-col">
+        <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </body>
     </html>
   )

@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,11 +14,12 @@ import {
   FiCheckCircle,
   FiInfo,
   FiList,
-  FiFlag,
-  FiTrendingUp
+  FiFlag
 } from 'react-icons/fi';
 
 export default function TutorialPost({ tutorial }) {
+  const [activeSection, setActiveSection] = useState(null);
+  
   if (!tutorial) {
     return (
       <div className="container mx-auto py-20 px-4 text-center">
@@ -36,7 +37,11 @@ export default function TutorialPost({ tutorial }) {
 
   return (
     <div className="container mx-auto pt-32 pb-20 px-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }}
+      >
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
           <Link
@@ -49,14 +54,18 @@ export default function TutorialPost({ tutorial }) {
           {/* Header */}
           <h1 className="text-4xl md:text-5xl font-bold mb-6">{tutorial.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-8">
-            <div className="flex items-center">
-              <FiCalendar className="mr-1" />
-              <span>{tutorial.date}</span>
-            </div>
-            <div className="flex items-center">
-              <FiClock className="mr-1" />
-              <span>{tutorial.readTime}</span>
-            </div>
+            {tutorial.date && (
+              <div className="flex items-center">
+                <FiCalendar className="mr-1" />
+                <span>{tutorial.date}</span>
+              </div>
+            )}
+            {tutorial.readTime && (
+              <div className="flex items-center">
+                <FiClock className="mr-1" />
+                <span>{tutorial.readTime}</span>
+              </div>
+            )}
             {tutorial.difficulty && (
               <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
                 {tutorial.difficulty}
@@ -72,7 +81,11 @@ export default function TutorialPost({ tutorial }) {
           {/* Featured Image */}
           {tutorial.imagePath && (
             <div className="w-full rounded-xl overflow-hidden mb-12">
-              <img src={tutorial.imagePath} alt={tutorial.title} className="w-auto max-w-75 h-auto max-h-96" />
+              <img 
+                src={tutorial.imagePath} 
+                alt={tutorial.title} 
+                className="w-full h-auto object-cover"
+              />
             </div>
           )}
 
@@ -93,7 +106,7 @@ export default function TutorialPost({ tutorial }) {
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow mb-12">
             <h2 className="text-2xl font-bold flex items-center mb-4">
               <FiInfo className="text-green-500 mr-2" />
-              About this Course
+              About this Tutorial
             </h2>
             <p className="mb-4">{tutorial.introduction}</p>
             {tutorial.prerequisites && tutorial.prerequisites.length > 0 && (
@@ -114,7 +127,7 @@ export default function TutorialPost({ tutorial }) {
             )}
           </div>
 
-          {/* Steps Section (Detailed Tutorial Content) */}
+          {/* Steps Section */}
           {tutorial.steps && tutorial.steps.length > 0 && (
             <div className="mb-12">
               <h2 className="text-3xl font-bold mb-6">Steps</h2>
@@ -122,7 +135,7 @@ export default function TutorialPost({ tutorial }) {
                 <div
                   key={index}
                   id={`step-${index + 1}`}
-                  className="border-l-4 pl-6 py-4 mb-8 bg-gray-50 dark:bg-gray-800 rounded"
+                  className="border-l-4 border-green-500 pl-6 py-4 mb-8 bg-gray-50 dark:bg-gray-800 rounded"
                 >
                   <div className="flex items-center mb-4">
                     <div className="mr-4 flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white">
@@ -147,7 +160,7 @@ export default function TutorialPost({ tutorial }) {
             </div>
           )}
 
-          {/* Topics Section (For Chapter Overviews) */}
+          {/* Topics Section */}
           {tutorial.topics && tutorial.topics.length > 0 && (
             <div className="mb-12">
               <h2 className="text-3xl font-bold mb-6">Topics</h2>
@@ -170,15 +183,15 @@ export default function TutorialPost({ tutorial }) {
             </div>
           )}
 
-          {/* Modules Section (For Main Course Overviews) */}
-          {tutorial.modules && tutorial.modules.length > 0 && tutorial.steps === undefined && (
+          {/* Modules Section */}
+          {tutorial.modules && tutorial.modules.length > 0 && (
             <div className="mb-12">
               <h2 className="text-3xl font-bold mb-6">Modules</h2>
               {tutorial.modules.map((module, index) => (
                 <div
                   key={index}
                   id={`module-${index + 1}`}
-                  className="border-l-4 pl-6 py-4 mb-8 bg-gray-50 dark:bg-gray-800 rounded"
+                  className="border-l-4 border-green-500 pl-6 py-4 mb-8 bg-gray-50 dark:bg-gray-800 rounded"
                 >
                   <div className="flex items-center mb-4">
                     <div className="mr-4 flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white">
@@ -221,7 +234,7 @@ export default function TutorialPost({ tutorial }) {
           {tutorial.nextSteps && tutorial.nextSteps.length > 0 && (
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow mb-12">
               <h2 className="text-2xl font-bold flex items-center mb-4">
-                <FiTrendingUp className="text-green-500 mr-2" />
+                <span className="mr-2">🚀</span>
                 Next Steps
               </h2>
               <ul className="list-none space-y-2">
@@ -260,36 +273,44 @@ export default function TutorialPost({ tutorial }) {
 
           {/* Author Info */}
           <div className="mt-16 border-t border-gray-200 dark:border-gray-700 pt-12 flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-24 h-24 relative rounded-full overflow-hidden flex-shrink-0">
-              <Image
-                src="/assets/images/profile.jpg"
-                alt="Swayam Dani"
-                fill
-                sizes="96px"
-                className="object-cover"
-              />
+            <div className="w-24 h-24 relative rounded-full overflow-hidden flex-shrink-0 bg-green-100 dark:bg-green-900 flex items-center justify-center">
+              <span className="text-green-600 dark:text-green-400 text-2xl font-bold">SD</span>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-2">Written by Swayam Dani</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Computer Science & Business Applications student at UC Riverside with a passion for AI, cybersecurity, and web development. Sharing knowledge to help others on their tech journey.
+                Computer Science & Business Applications student at UC Riverside with a passion for AI, cybersecurity, 
+                and web development. Sharing knowledge to help others on their tech journey.
               </p>
               <div className="flex space-x-4">
-                <a
-                  href="https://www.linkedin.com/in/swayam-dani-554091299"
-                  target="_blank"
+                <a 
+                  href="https://www.linkedin.com/in/swayam-dani-554091299" 
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-700"
                 >
                   <FiLinkedin className="text-xl" />
                 </a>
-                <a
-                  href="https://github.com/SwayamDani"
-                  target="_blank"
+                <a 
+                  href="https://github.com/SwayamDani" 
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
                 >
-                  <i className="fab fa-github text-xl"></i>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-xl"
+                  >
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
                 </a>
               </div>
             </div>

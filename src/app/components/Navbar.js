@@ -1,13 +1,15 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiSun, FiMoon, FiHome, FiBookOpen, FiCode, FiGithub } from 'react-icons/fi';
+import { FiMenu, FiX, FiSun, FiMoon, FiHome, FiBookOpen, FiCode, FiGithub, FiSearch, FiUser } from 'react-icons/fi';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function Navbar({ darkMode, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const pathname = usePathname();
   
   // Handle scroll event to change navbar appearance
@@ -31,6 +33,17 @@ export default function Navbar({ darkMode, toggleTheme }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [mobileMenuOpen]);
+  
+  // Handle search submit
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm) {
+      // In a real app, you'd redirect to a search results page
+      console.log(`Searching for: ${searchTerm}`);
+      setSearchTerm('');
+      setSearchOpen(false);
+    }
+  };
   
   // Navigation items
   const navItems = [
@@ -69,6 +82,18 @@ export default function Navbar({ darkMode, toggleTheme }) {
               </span>
               <span className="text-gray-800 dark:text-white transition-colors duration-300">Byte</span>
               <span className="text-green-500">Hub</span>
+              
+              {/* Welcome badge - only shows on larger screens when not scrolled */}
+              {!scrolled && (
+                <motion.span 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="ml-3 hidden md:flex items-center bg-green-100 dark:bg-green-900/30 px-3 py-1 rounded-full text-sm text-green-800 dark:text-green-300"
+                >
+                  <FiUser className="mr-1" size={14} /> Welcome!
+                </motion.span>
+              )}
             </Link>
             
             {/* Desktop Menu */}
@@ -94,12 +119,30 @@ export default function Navbar({ darkMode, toggleTheme }) {
                 </Link>
               ))}
               
+              {/* Search Button */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Search"
+              >
+                <FiSearch />
+              </button>
+              
+              {/* Theme Toggle */}
+              <button 
+                onClick={toggleTheme} 
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {darkMode ? <FiSun className="text-xl" /> : <FiMoon className="text-xl" />}
+              </button>
+              
               {/* GitHub Link */}
               <a 
                 href="https://github.com/SwayamDani" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="ml-2 p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 aria-label="GitHub Profile"
               >
                 <FiGithub className="text-xl" />
@@ -108,6 +151,15 @@ export default function Navbar({ darkMode, toggleTheme }) {
             
             {/* Mobile Menu Button */}
             <div className="flex items-center md:hidden">
+              {/* Search Button Mobile */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-2 mr-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                aria-label="Search"
+              >
+                <FiSearch className="text-xl" />
+              </button>
+              
               {/* Theme Toggle Mobile */}
               <button 
                 onClick={toggleTheme} 
@@ -187,6 +239,62 @@ export default function Navbar({ darkMode, toggleTheme }) {
             className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" 
             onClick={() => setMobileMenuOpen(false)}
           ></motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Search Modal */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-start justify-center pt-24"
+            onClick={() => setSearchOpen(false)}
+          >
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-2xl mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold">Search</h3>
+                <button onClick={() => setSearchOpen(false)}>
+                  <FiX className="text-gray-500" />
+                </button>
+              </div>
+              <form onSubmit={handleSearchSubmit}>
+                <div className="relative">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search for tutorials, blog posts, and more..."
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+                <div className="mt-6">
+                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">SUGGESTED TOPICS</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {['Data Structures', 'Algorithms', 'Web Development', 'Next.js', 'React'].map((topic, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full text-sm"
+                        onClick={() => setSearchTerm(topic)}
+                      >
+                        {topic}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
